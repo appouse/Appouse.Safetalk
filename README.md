@@ -1,5 +1,7 @@
 # Appouse.Safetalk
 
+[![CI](https://github.com/appouse/Appouse.Safetalk/actions/workflows/ci.yml/badge.svg)](https://github.com/appouse/Appouse.Safetalk/actions/workflows/ci.yml)
+
 .NET 8 / .NET 9 için **sunucudan sunucuya (B2B) güvenli haberleşme** kütüphanesi. İstemci tarafında giden
 HTTP isteklerini **HMAC-SHA256** ile imzalar, sunucu tarafında bu imzaları istek controller'a ulaşmadan doğrular.
 
