@@ -21,9 +21,7 @@
     <PackageProjectUrl>https://github.com/appouse/Appouse.Safetalk</PackageProjectUrl>
     <RepositoryUrl>https://github.com/appouse/Appouse.Safetalk</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <!-- Owner decision, set before publishing to nuget.org:
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>  (or PackageLicenseFile for proprietary terms)
-    -->
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>

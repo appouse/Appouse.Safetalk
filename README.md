@@ -448,3 +448,7 @@ dotnet pack  Appouse.Safetalk.slnx -c Release -o artifacts
 dotnet run --project samples/Appouse.Safetalk.Samples.Server
 dotnet run --project samples/Appouse.Safetalk.Samples.Client
 ```
+
+## Lisans
+
+[MIT](LICENSE) © 2026 Appouse Software Solutions
