@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Appouse.Safetalk.Core\Appouse.Safetalk.Core.csproj" />
+  </ItemGroup>
+
+</Project>

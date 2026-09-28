@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- Contracts share the root namespace (like Microsoft.Extensions.*.Abstractions), so consumers need no extra using. -->
+    <RootNamespace>Appouse.Safetalk</RootNamespace>
+    <Description>Dependency-free contracts of Appouse.Safetalk (IHmacSignatureService, IHmacSecretProvider, IHmacReplayCache, header names). Reference this package from infrastructure/domain layers that implement secret stores or replay caches without taking a dependency on ASP.NET Core or HttpClient.</Description>
+    <PackageTags>hmac;hmac-sha256;abstractions;request-signing;b2b;security</PackageTags>
+  </PropertyGroup>
+
+</Project>

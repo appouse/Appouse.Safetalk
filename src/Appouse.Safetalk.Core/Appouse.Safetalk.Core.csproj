@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>Appouse.Safetalk</RootNamespace>
+    <Description>Core primitives of Appouse.Safetalk: request canonicalization and HMAC-SHA256 signing/verification for secure server-to-server (B2B) communication.</Description>
+    <PackageTags>hmac;hmac-sha256;signature;request-signing;b2b;security</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Appouse.Safetalk.Abstractions\Appouse.Safetalk.Abstractions.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Appouse.Safetalk.Core.Tests" />
+  </ItemGroup>
+
+</Project>

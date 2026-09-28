@@ -1,0 +1,24 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="global.json" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/Appouse.Safetalk.Abstractions/Appouse.Safetalk.Abstractions.csproj" />
+    <Project Path="src/Appouse.Safetalk.Core/Appouse.Safetalk.Core.csproj" />
+    <Project Path="src/Appouse.Safetalk.Client/Appouse.Safetalk.Client.csproj" />
+    <Project Path="src/Appouse.Safetalk.Server/Appouse.Safetalk.Server.csproj" />
+  </Folder>
+  <Folder Name="/samples/">
+    <Project Path="samples/Appouse.Safetalk.Samples.Server/Appouse.Safetalk.Samples.Server.csproj" />
+    <Project Path="samples/Appouse.Safetalk.Samples.Client/Appouse.Safetalk.Samples.Client.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Appouse.Safetalk.Core.Tests/Appouse.Safetalk.Core.Tests.csproj" />
+    <Project Path="tests/Appouse.Safetalk.Client.Tests/Appouse.Safetalk.Client.Tests.csproj" />
+    <Project Path="tests/Appouse.Safetalk.Server.Tests/Appouse.Safetalk.Server.Tests.csproj" />
+    <Project Path="tests/Appouse.Safetalk.IntegrationTests/Appouse.Safetalk.IntegrationTests.csproj" />
+  </Folder>
+</Solution>
