@@ -41,6 +41,9 @@ jobs:
         run: dotnet build Appouse.Safetalk.slnx -c Release --no-restore
 
       - name: Test
+        # Redis/KeyDB tests run in Linux containers: required on Linux, skipped where Linux containers are unavailable.
+        env:
+          SAFETALK_REQUIRE_CONTAINERS: ${{ matrix.os == 'ubuntu-latest' }}
         run: dotnet test Appouse.Safetalk.slnx -c Release --no-build --logger trx --results-directory TestResults
 
       - name: Upload test results

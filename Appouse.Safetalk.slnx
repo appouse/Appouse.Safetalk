@@ -11,6 +11,7 @@
     <Project Path="src/Appouse.Safetalk.Core/Appouse.Safetalk.Core.csproj" />
     <Project Path="src/Appouse.Safetalk.Client/Appouse.Safetalk.Client.csproj" />
     <Project Path="src/Appouse.Safetalk.Server/Appouse.Safetalk.Server.csproj" />
+    <Project Path="src/Appouse.Safetalk.Redis/Appouse.Safetalk.Redis.csproj" />
   </Folder>
   <Folder Name="/samples/">
     <Project Path="samples/Appouse.Safetalk.Samples.Server/Appouse.Safetalk.Samples.Server.csproj" />
@@ -21,5 +22,6 @@
     <Project Path="tests/Appouse.Safetalk.Client.Tests/Appouse.Safetalk.Client.Tests.csproj" />
     <Project Path="tests/Appouse.Safetalk.Server.Tests/Appouse.Safetalk.Server.Tests.csproj" />
     <Project Path="tests/Appouse.Safetalk.IntegrationTests/Appouse.Safetalk.IntegrationTests.csproj" />
+    <Project Path="tests/Appouse.Safetalk.Redis.Tests/Appouse.Safetalk.Redis.Tests.csproj" />
   </Folder>
 </Solution>

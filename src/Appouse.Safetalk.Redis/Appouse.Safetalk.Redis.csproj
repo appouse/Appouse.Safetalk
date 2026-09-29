@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>Appouse.Safetalk.Redis</RootNamespace>
+    <Description>Distributed replay protection for Appouse.Safetalk: an IHmacReplayCache backed by Redis-compatible servers (Redis, KeyDB) through StackExchange.Redis, so that a captured request cannot be replayed against any instance of a scaled-out API.</Description>
+    <PackageTags>hmac;replay-protection;redis;keydb;stackexchange-redis;aspnetcore;b2b;security</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Appouse.Safetalk.Server\Appouse.Safetalk.Server.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="StackExchange.Redis" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Appouse.Safetalk.Redis.Tests" />
+  </ItemGroup>
+
+</Project>

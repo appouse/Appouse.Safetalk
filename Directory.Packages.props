@@ -10,6 +10,8 @@
     <PackageVersion Include="Microsoft.Extensions.Http" Version="8.0.1" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.3" />
     <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
+    <!-- 2.8.24 is the minimum; binary compatibility with 3.x was verified against Redis 7.4 and KeyDB. -->
+    <PackageVersion Include="StackExchange.Redis" Version="2.8.24" />
   </ItemGroup>
 
   <ItemGroup Label="Samples">
@@ -22,6 +24,7 @@
     <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.5" />
     <PackageVersion Include="Microsoft.Extensions.TimeProvider.Testing" Version="9.10.0" />
     <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="8.10.0" />
+    <PackageVersion Include="Testcontainers" Version="4.15.0" />
   </ItemGroup>
 
   <ItemGroup Label="Tests (net8.0)" Condition="'$(TargetFramework)' == 'net8.0'">

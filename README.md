@@ -20,6 +20,7 @@ HTTP isteklerini **HMAC-SHA256** ile imzalar, sunucu tarafında bu imzaları ist
 | `Appouse.Safetalk.Core` | Kanonikleştirme (`CanonicalRequestBuffer`) ve `HmacSha256SignatureService` | Abstractions |
 | `Appouse.Safetalk.Client` | `HmacSigningHandler` (DelegatingHandler), `AddHmacClient(...)`, `AddHmacSigning(...)` | Core, Microsoft.Extensions.Http |
 | `Appouse.Safetalk.Server` | `HmacAuthenticationMiddleware`, `AddHmacServer(...)`, `UseHmacAuthentication()`, `AddAuthentication().AddHmac()` | Core, ASP.NET Core |
+| `Appouse.Safetalk.Redis` | Birden fazla instance için dağıtık replay koruması (Redis ve KeyDB): `AddRedisReplayProtection(...)` | Server, StackExchange.Redis |
 
 > Secret deposunu veya replay cache'i Infrastructure katmanında implement ediyorsanız yalnızca
 > `Appouse.Safetalk.Abstractions` paketine referans vermeniz yeterlidir; ASP.NET Core bağımlılığı gelmez.
@@ -346,24 +347,54 @@ edilmiş isteklerin tekrar oynatılmasına izin verirdi. Paylaşımlı (Redis gi
 veya rolling deploy ile genişletmek de, değişiklikten önceki `(yeni - eski)` süre içinde kabul edilmiş istekleri tekrar
 oynatılabilir bırakır: yeni pencereyi, eski pencere + 30 sn geçtikten sonra devreye alın.
 
-Varsayılan `InMemoryHmacReplayCache` **tek instance** için geçerlidir. Birden fazla instance çalışıyorsa paylaşımlı bir
-depo kullanın:
+| Replay cache | Kapsam | Kurulum |
+|---|---|---|
+| `InMemoryHmacReplayCache` | **Tek instance**; restart'ta sıfırlanır | `.AddReplayProtection()` |
+| `RedisHmacReplayCache` (`Appouse.Safetalk.Redis`) | Tüm instance'lar ortak; Redis ve KeyDB | `.AddRedisReplayProtection(...)` |
+| Kendi implementasyonunuz | — | `.AddReplayProtection<TCache>()` (`IHmacReplayCache`) |
+
+#### Redis / KeyDB (birden fazla instance)
+
+API'niz birden fazla instance'ta çalışıyorsa (load balancer, Kubernetes) `Appouse.Safetalk.Redis` paketini ekleyin:
+
+```bash
+dotnet add package Appouse.Safetalk.Redis
+```
 
 ```csharp
-public sealed class RedisReplayCache(IConnectionMultiplexer redis) : IHmacReplayCache
-{
-    public async ValueTask<bool> TryAddAsync(string signature, DateTimeOffset expiresAt, CancellationToken cancellationToken = default)
-    {
-        TimeSpan ttl = expiresAt - DateTimeOffset.UtcNow;
-        if (ttl <= TimeSpan.Zero) return false; // fail closed
-
-        // SET key value NX PX ttl — atomik "yoksa ekle"
-        return await redis.GetDatabase().StringSetAsync($"safetalk:replay:{signature}", 1, ttl, When.NotExists);
-    }
-}
-
-builder.Services.AddHmacServer(builder.Configuration.GetSection("Safetalk")).AddReplayProtection<RedisReplayCache>();
+builder.Services
+    .AddHmacServer(builder.Configuration.GetSection("Safetalk"))
+    .AddRedisReplayProtection(builder.Configuration.GetConnectionString("Redis")!); // "keydb:6379,password=..."
 ```
+
+Diğer kurulum biçimleri:
+
+```csharp
+// appsettings: "Safetalk": { "ReplayCache": { "Configuration": "redis:6379", "KeyPrefix": "orders-api:", "Database": 2 } }
+.AddRedisReplayProtection(builder.Configuration.GetSection("Safetalk:ReplayCache"));
+
+// Uygulamanın zaten kayıtlı IConnectionMultiplexer'ını kullanmak (paket onu dispose etmez)
+builder.Services.AddSingleton<IConnectionMultiplexer>(_ => ConnectionMultiplexer.Connect("redis:6379"));
+.AddRedisReplayProtection(options => options.KeyPrefix = "orders-api:");
+```
+
+| Seçenek | Varsayılan | Açıklama |
+|---|---|---|
+| `Configuration` | `null` | StackExchange.Redis bağlantı metni. Boşsa DI'daki `IConnectionMultiplexer` kullanılır. |
+| `KeyPrefix` | `safetalk:replay:` | Anahtar öneki; aynı sunucuyu paylaşan uygulamaları ayırır |
+| `Database` | `-1` | Veritabanı numarası (`-1`: bağlantının varsayılanı) |
+
+Nasıl çalışır ve nelere dikkat etmeli:
+- Her kabul edilen imza `SET safetalk:replay:{imza} 1 NX PX {ttl}` ile yazılır. Kontrol ve yazma **tek atomik komuttur**; aynı
+  isteğin eşzamanlı kopyaları hangi instance'a giderse gitsin yalnızca biri kabul edilir. Anahtar, timestamp artık kabul
+  edilmeyeceği an kendiliğinden silinir.
+- **KeyDB** Redis protokolüyle birebir uyumludur ve aynı yöntemle desteklenir; ayrı bir ayar gerekmez. Testler gerçek Redis 7 ve
+  KeyDB sunucularına karşı çalıştırılır. StackExchange.Redis 2.8.24 ve üzeri (3.x dahil) desteklenir.
+- **Fail closed:** Sunucuya ulaşılamazsa istek kabul edilmez (komut hata verir, istek 500 ile sonlanır). Bağlantı ilk kullanımda
+  kurulur ve sunucu geçici olarak kapalıysa arka planda yeniden denenir (bağlantı metninde `abortConnect` verilmedikçe).
+- **Replikasyon:** Replay koruması sunucunun tutarlılığı kadar güçlüdür. Asenkron replikasyon (Redis Sentinel failover'ı, KeyDB
+  multi-master / active-replica kurulumunda farklı master'lara yazan instance'lar) yeni yazılmış anahtarları kaybedebilir veya
+  yarıştırabilir. Tüm instance'ları **aynı primary'ye** bağlayın.
 
 Aynı istemcinin aynı saniye içinde byte'ı byte'ına aynı iki *farklı* isteği aynı imzayı üretir; ikincisi reddedilir.
 Bu tür istekleri gönderen istemciler gövdeye veya query'ye benzersiz bir istek kimliği eklemelidir. (Aynı isteğin retry ve
